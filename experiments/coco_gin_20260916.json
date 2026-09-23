@@ -1,0 +1,45 @@
+{
+  "protocol": "coco-gin-nope-aw-two-seed-20260916-v1",
+  "dataset": "coco-sp",
+  "methods": [
+    "nope",
+    "aw"
+  ],
+  "seeds": [
+    0,
+    1
+  ],
+  "configuration_source": "Fixed transfer of the existing PascalVOC-SP GIN configuration; no COCO tuning or seed selection",
+  "config": {
+    "hidden_dim": 32,
+    "num_layers": 4,
+    "dropout": 0.2,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.0001,
+    "batch_size": 16,
+    "epochs": 250,
+    "patience": 251,
+    "num_steps": 16,
+    "z": 0.8,
+    "learnable_frequencies": false,
+    "backbone": "gin",
+    "gin_aw_variant": "legacy",
+    "num_workers": 4,
+    "final_fit": false,
+    "evaluate_test_each_epoch": true,
+    "selection_split": "validation"
+  },
+  "evaluation": {
+    "metric": "macro-f1",
+    "checkpoint_selection": "validation-only",
+    "report": "All seeds: test at validation-best epoch, mean and sample standard deviation",
+    "early_stopping": false
+  },
+  "resources": {
+    "gpus": 2,
+    "tasks_per_gpu": 2
+  },
+  "install_inside_job": false,
+  "automatic_restarts": false,
+  "scope": "Fixed COCO-SP GIN comparison: NoPE and AW, seeds 0 and 1, with all trials reported."
+}

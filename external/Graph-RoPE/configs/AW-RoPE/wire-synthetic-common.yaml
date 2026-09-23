@@ -1,0 +1,127 @@
+# AW-RoPE search and one-shot comparison on the synthetic datasets.
+#
+# Only AW-RoPE is tuned.  NoPE, AW-NB, and AW-NB-MS inherit the winning AW
+# training parameters for one final run.  Formal scripts never select WIRE.
+
+out_dir: runs/wire-comparable
+metric_best: rmse
+metric_agg: argmin
+seed: 0
+num_workers: 4
+wandb:
+  use: False
+
+dataset:
+  dir: data
+  format: WIRE-Synthetic
+  name: monochromatic-0
+  task: graph
+  task_type: regression
+  transductive: False
+  node_encoder: True
+  node_encoder_name: Int3+LapPE
+  node_encoder_bn: False
+  edge_encoder: False
+
+# Every comparison method receives the same LapPE in its node input.  The
+# separate LapRoPE coordinate encoder is disabled because WIRE is not run.
+posenc_LapPE:
+  enable: True
+  eigen:
+    laplacian_norm: none
+    eigvec_norm: L2
+    max_freqs: 5
+  model: DeepSet
+  dim_pe: 5
+  layers: 2
+  n_heads: 1
+  post_layers: 0
+  raw_norm_type: none
+
+posenc_LapRoPE:
+  enable: False
+  eigen:
+    laplacian_norm: none
+    eigvec_norm: L2
+    max_freqs: 5
+  model: DeepSet
+  dim_pe: 5
+  layers: 2
+  n_heads: 1
+  post_layers: 0
+  raw_norm_type: none
+
+train:
+  mode: custom
+  batch_size: 16
+  eval_period: 1
+  ckpt_period: 250
+  auto_resume: False
+
+model:
+  type: GT
+  loss_fun: mse
+  graph_pooling: mean
+
+gt:
+  layer_type: GraphRoPE
+  layers: 4
+  n_heads: 1
+  dim_hidden: 32
+  dropout: 0.2
+  attn_dropout: 0.2
+  layer_norm: True
+  batch_norm: False
+  residual: True
+  graphrope:
+    enable: True
+    method: none
+    encoder: LapRoPE
+    t_dim: 5
+    init_omega: uniform
+    attn_type: Full
+    share_omega: False
+    double_omega: False
+    freeze_omega: False
+    aw:
+      num_steps: 8
+      z: 0.8
+      z_values: [0.2, 0.4, 0.6, 0.8]
+      # hidden=1 keeps the full 4-layer model within 0.2% of WIRE's
+      # parameter count at m=5 (39,575 vs 39,644 parameters).
+      field_hidden_dim: 1
+      max_displacement: 3.141592653589793
+      frequency_base: 10000.0
+      learnable_frequencies: True
+      learnable_z: True
+      normalize_resolvent: False
+      fixed:
+        cache_path: ""
+        field_protocol: topology-rwdiag-skew-v1
+        variant: nonflat
+      exact:
+        diffusion_time: 2.0
+        eps: 1.0e-12
+        soft_phase_normalization: False
+        # Exact geometry is prepared once before training.  The model only
+        # reads the complete cached chi_l(u,v); it never runs eigh/matrix_exp.
+        heat_kernel_method: eigh
+        learnable_frequencies: False
+        precomputed: True
+        cache_path: ""
+        field_protocol: topology-rwdiag-skew-v1
+
+gnn:
+  head: san_graph
+  layers_pre_mp: 0
+  dim_inner: 32
+  act: relu
+  dropout: 0.2
+
+optim:
+  optimizer: adam
+  weight_decay: 0.0001
+  base_lr: 0.0002
+  max_epoch: 250
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 0

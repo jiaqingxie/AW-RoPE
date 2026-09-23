@@ -1,0 +1,66 @@
+out_dir: results
+metric_best: mrr
+num_workers: 16
+wandb:
+  use: false
+  project: pcqm4m-contact
+dataset:
+  format: OGB
+  name: PCQM4Mv2Contact-shuffle
+  task: graph
+  task_type: classification
+  resample_negative: true
+  transductive: false
+  node_encoder: true
+  node_encoder_name: Atom
+  node_encoder_bn: false
+  edge_encoder: true
+  edge_encoder_name: Bond
+  edge_encoder_bn: false
+posenc_LapPE:
+  enable: false
+  eigen:
+    laplacian_norm: none
+    eigvec_norm: L2
+    max_freqs: 10
+  model: DeepSet
+  dim_pe: 16
+  layers: 2
+  raw_norm_type: none
+train:
+  mode: custom
+  batch_size: 500
+  eval_period: 1
+  ckpt_period: 100
+model:
+  type: GPSModel
+  loss_fun: cross_entropy
+  graph_pooling: mean
+  edge_decoding: dot
+gt:
+  layer_type: CustomGatedGCN+Transformer
+  layers: 6
+  n_heads: 4
+  dim_hidden: 76
+  dropout: 0.0
+  attn_dropout: 0.5
+  layer_norm: true
+  batch_norm: false
+gnn:
+  head: inductive_edge
+  layers_pre_mp: 0
+  layers_post_mp: 1
+  dim_inner: 76
+  batchnorm: true
+  act: gelu
+  dropout: 0.0
+  agg: mean
+  normalize_adj: false
+optim:
+  clip_grad_norm: true
+  optimizer: adamW
+  weight_decay: 0.0
+  base_lr: 0.001
+  max_epoch: 150
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 5

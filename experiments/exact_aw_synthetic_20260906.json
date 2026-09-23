@@ -1,0 +1,66 @@
+{
+  "protocol": "exact-aw-synthetic-matched-20260906-v1",
+  "training_enabled": true,
+  "arms": [
+    "exact-aw",
+    "sparse-aw"
+  ],
+  "datasets": [
+    "monochromatic-0",
+    "monochromatic-5",
+    "monochromatic-10",
+    "monochromatic-15",
+    "watts-strogatz-spd"
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "epochs": 250,
+  "batch_size": 16,
+  "gpu_count": 4,
+  "tasks_per_gpu": 4,
+  "efficiency_repeats": 3,
+  "efficiency_warmup_epochs": 1,
+  "efficiency_measured_epochs": 3,
+  "learnable_field": true,
+  "learnable_frequencies": true,
+  "learnable_z": true,
+  "normalize_resolvent": false,
+  "selection": "validation-best/test-same-epoch",
+  "tune_hyperparameters": false,
+  "replace_seeds": false,
+  "early_exit_on_test": false,
+  "reuse_old_heat_kernel_results": false,
+  "configurations": {
+    "monochromatic-0": {
+      "learning_rate": 0.0001,
+      "num_steps": 8,
+      "z": 0.4
+    },
+    "monochromatic-5": {
+      "learning_rate": 0.0002,
+      "num_steps": 16,
+      "z": 0.8
+    },
+    "monochromatic-10": {
+      "learning_rate": 0.0002,
+      "num_steps": 16,
+      "z": 0.8
+    },
+    "monochromatic-15": {
+      "learning_rate": 0.0002,
+      "num_steps": 8,
+      "z": 0.8
+    },
+    "watts-strogatz-spd": {
+      "learning_rate": 0.0002,
+      "num_steps": 8,
+      "z": 0.8
+    }
+  },
+  "reference": "Full now denotes Exact-AW (complete learned resolvent action), NOT historical heat-kernel unit-pair-phase Full-HPE. Existing historical results retain their identity.",
+  "matching": "Identical full state initialization, all parameters, backbone, Q/K interface, trainable field/frequencies/z and optimizer; backend alone differs. Existing AW table reference lacks matched initialization audit, so 15 fresh paired AW runs are included.",
+  "scope": "30 formal synthetic trials, 10 one-epoch probes and 30 isolated four-epoch efficiency repeats."
+}

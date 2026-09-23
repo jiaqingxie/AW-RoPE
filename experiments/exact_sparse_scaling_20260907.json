@@ -1,0 +1,10 @@
+{
+ "protocol": "aw-rope-exact-sparse-scaling-20260907-v1",
+ "gpu_count": 4,
+ "nodes": [64,128,256,512,1024,2048,4096,8192,16384],
+ "degrees": [6,18], "depths": [8,16,32], "repeats": [0,1,2],
+ "table_nodes": [64,128,256], "kernels": ["relu","softmax"],
+ "width": 64, "heads": 4, "z": 0.8,
+ "warmup_steps": 3, "measured_steps": 10, "timeout_seconds": 900,
+ "scope": "Production positional-attention layer forward and scalar-loss backward; no optimizer update, loader or preprocessing. Same initial parameters and inputs for Exact/Sparse. One process per GPU; all declared cells retained; CUDA OOM, timeout and software errors distinguished. No filler."
+}
